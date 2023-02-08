@@ -1,8 +1,19 @@
 from PIL import Image
 
 
-if __name__ == '__main__':
-    img = Image.open("lena.png")
+def Laplace4(img):
+    print(":)")
+
+
+def Laplace8(img):
+    print(":)")
+
+
+def Laplace9(img):
+    b = list()
+    r = list()
+    g = list()
+
     pixel_map = img.load()
 
     width, height = img.size
@@ -10,22 +21,22 @@ if __name__ == '__main__':
     output_img = Image.new(mode="RGB", size=(width, height))
     new_pixel_map = output_img.load()
 
-    for i in range(1, width-1):
-        for j in range(1, height-1):
-            r1, g1, b1 = img.getpixel((i-1, j-1))
-            r2, g2, b2 = img.getpixel((i-1, j))
-            r3, g3, b3 = img.getpixel((i-1, j+1))
-            r4, g4, b4 = img.getpixel((i, j-1))
-            r5, g5, b5 = img.getpixel((i, j))
-            r6, g6, b6 = img.getpixel((i, j+1))
-            r7, g7, b7 = img.getpixel((i+1, j-1))
-            r8, g8, b8 = img.getpixel((i+1, j))
-            r9, g9, b9 = img.getpixel((i+1, j+1))
+    for i in range(1, width - 1):
+        for j in range(1, height - 1):
+            for k in range(0, 9):
+                rk, gk, bk = img.getpixel((i + int(k / 3) - 1, j + k % 3 - 1))
+                r.append(rk)
+                g.append(gk)
+                b.append(bk)
 
-            r = -1*(r1 + r2 + r3 + r4 + r6 + r7 + r8+ r9) + 9*r5
-            g = -1*(g1 + g2 + g3 + g4 + g6 + g7 + g8+ g9) + 9*g5
-            b = -1*(b1 + b2 + b3 + b4 + b6 + b7 + b8+ b9) + 9*b5
-            new_pixel_map[i, j] = (int(r), int(g), int(b))
+            r0 = -1 * (r[0] + r[1] + r[2] + r[3] + r[5] + r[6] + r[7] + r[8]) + 9 * r[4]
+            g0 = -1 * (g[0] + g[1] + g[2] + g[3] + g[5] + g[6] + g[7] + g[8]) + 9 * g[4]
+            b0 = -1 * (b[0] + b[1] + b[2] + b[3] + b[5] + b[6] + b[7] + b[8]) + 9 * b[4]
+            new_pixel_map[i, j] = (int(r0), int(g0), int(b0))
+
+            b = list()
+            r = list()
+            g = list()
 
     output_img.save("output", format="png")
 
@@ -33,3 +44,6 @@ if __name__ == '__main__':
     output_img.show("Output")
 
 
+if __name__ == '__main__':
+    img = Image.open("lena.png")
+    Laplace9(img)
