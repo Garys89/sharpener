@@ -1,20 +1,10 @@
 from PIL import Image
 
 
-def Laplace4(img):
-    print(":)")
-
-
-def Laplace8(img):
-    print(":)")
-
-
-def Laplace9(img):
+def laplace(img, mask):
     b = list()
     r = list()
     g = list()
-
-    pixel_map = img.load()
 
     width, height = img.size
 
@@ -29,9 +19,14 @@ def Laplace9(img):
                 g.append(gk)
                 b.append(bk)
 
-            r0 = -1 * (r[0] + r[1] + r[2] + r[3] + r[5] + r[6] + r[7] + r[8]) + 9 * r[4]
-            g0 = -1 * (g[0] + g[1] + g[2] + g[3] + g[5] + g[6] + g[7] + g[8]) + 9 * g[4]
-            b0 = -1 * (b[0] + b[1] + b[2] + b[3] + b[5] + b[6] + b[7] + b[8]) + 9 * b[4]
+            r0 = 0
+            g0 = 0
+            b0 = 0
+            for x in range(0, 9):
+                r0 = r0 + mask[x] * r[x]
+                g0 = g0 + mask[x] * g[x]
+                b0 = b0 + mask[x] * b[x]
+
             new_pixel_map[i, j] = (int(r0), int(g0), int(b0))
 
             b = list()
@@ -39,11 +34,14 @@ def Laplace9(img):
             g = list()
 
     output_img.save("output", format="png")
-
-    img.show("Input")
     output_img.show("Output")
 
 
 if __name__ == '__main__':
     img = Image.open("lena.png")
-    Laplace9(img)
+    img.show("Input")
+    laplace(img, [-1, -1, -1, -1, 8, -1, -1, -1, -1])
+    laplace(img, [-1, -1, -1, -1, 9, -1, -1, -1, -1])
+    laplace(img, [0, -1, 0, -1, 4, -1, 0, -1, 0])
+    laplace(img, [0, -1, 0, -1, 5, -1, 0, -1, 0])
+
